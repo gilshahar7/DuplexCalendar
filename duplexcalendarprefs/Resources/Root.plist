@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>DuplexCalendar's Options</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>placeholder</key>
+			<string>0</string>
+			<key>bestGuess</key>
+			<string>0</string>
+			<key>defaults</key>
+			<string>com.gilshahar7.duplexcalendarprefs</string>
+			<key>key</key>
+			<string>offsetXTextField</string>
+			<key>label</key>
+			<string>X Offset:</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>placeholder</key>
+			<string>0</string>
+			<key>bestGuess</key>
+			<string>0</string>
+			<key>defaults</key>
+			<string>com.gilshahar7.duplexcalendarprefs</string>
+			<key>key</key>
+			<string>offsetYTextField</string>
+			<key>label</key>
+			<string>Y Offset:</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>placeholder</key>
+			<string>16</string>
+			<key>bestGuess</key>
+			<string>16</string>
+			<key>defaults</key>
+			<string>com.gilshahar7.duplexcalendarprefs</string>
+			<key>isDecimalPad</key>
+			<true/>
+			<key>key</key>
+			<string>FontSizeTextField</string>
+			<key>label</key>
+			<string>Font Size:</string>
+		</dict>
+		<dict>
+            <key>cell</key>
+			<string>PSButtonCell</string>
+            <key>label</key>
+            <string>Save</string>
+            <key>action</key>
+			<string>save</string>
+        </dict>
+	</array>
+	<key>title</key>
+	<string>DuplexCalendar</string>
+</dict>
+</plist>

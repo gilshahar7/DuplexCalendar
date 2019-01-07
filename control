@@ -1,0 +1,9 @@
+Package: com.gilshahar7.duplexcalendar
+Name: DuplexCalendar
+Depends: mobilesubstrate
+Version: 1.0
+Architecture: iphoneos-arm
+Description: Add the alternate calendar label to the LockScreen on iOS 9.
+Maintainer: gilshahar7
+Author: gilshahar7
+Section: Tweaks
