@@ -1,13 +1,17 @@
 #define kScreenWidth [[UIScreen mainScreen] bounds].size.width
-#import <AudioToolbox/AudioToolbox.h>
-#import <AudioToolbox/AudioServices.h>
 @interface SBTodayTableHeaderView : UIView
 -(NSString *)lunarDateHeaderString;
 @end
 
+@interface SBAnimationSettings
+@end
+
+@interface SBFadeAnimationSettings
+@property(retain, nonatomic) SBAnimationSettings *dateInSettings;
+@end
+
 @interface SBFLockScreenDateView : UIView
 @property (nonatomic, assign) UILabel *duplexCalendarLabel;
-@property (nonatomic, assign) SBTodayTableHeaderView *todayHeaderView;
 @property (nonatomic, assign) NSString *todayHeaderViewText;
 @property bool dateHidden;
 -(id)_dateFont;
@@ -21,9 +25,6 @@
 @end 
 
 @interface _UILegibilityLabel : _UILegibilityView
-@property (nonatomic, assign) NSString* string;
-@property (nonatomic, assign) UIFont* font;
-
 @end
 
 extern "C" CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
@@ -73,14 +74,14 @@ static float sizeheight = 0.0;
 	NSString *offsetYTextField = [prefs objectForKey:@"offsetYTextField"];
 	NSString *FontSizeTextField = [prefs objectForKey:@"FontSizeTextField"];	
 	
-	if(originx <= 0.0)
-	{
+	//if(originx <= 0.0)
+	//{
 		UILabel *originalLabel = MSHookIvar<UILabel *>(self, "_dateLabel");
 		originx = originalLabel.frame.origin.x;
 		originy = originalLabel.frame.origin.y;
 		sizewidth = originalLabel.frame.size.width;
 		sizeheight = originalLabel.frame.size.height;
-	}
+	//}
 	[self.duplexCalendarLabel setFrame:CGRectMake(originx-50+ [offsetXTextField floatValue], originy + 19 + [offsetYTextField floatValue], sizewidth+100, sizeheight)];
 	UIFont *font = self.duplexCalendarLabel.font;
 	if([FontSizeTextField floatValue] == 0){
@@ -95,32 +96,33 @@ static float sizeheight = 0.0;
 			self.duplexCalendarLabel.hidden = false;
 		}
 	}
+
 }
 
 -(void)_updateLabels{
+		%orig;
 	[self layoutDuplexCalendarLabel];
-	if(!self.todayHeaderViewText){
+	//if(!self.todayHeaderViewText){
 		self.todayHeaderViewText = [stattodayHeaderView lunarDateHeaderString];
-	}
+	//}
 	self.duplexCalendarLabel.text = self.todayHeaderViewText;
-				
 
-	%orig;
+
 	
 }
 -(void)_layoutDateLabel {	
-	[self layoutDuplexCalendarLabel];
 	%orig;
+	[self layoutDuplexCalendarLabel];
 	_UILegibilityLabel *originalLegibilityLabel = MSHookIvar<_UILegibilityLabel *>(self, "_legibilityDateLabel");
 	[originalLegibilityLabel setFrame:CGRectMake(originx, originy - 3, sizewidth, sizeheight)];
 }
 -(void)updateFormat{
-	[self layoutDuplexCalendarLabel];
 	%orig;
+	[self layoutDuplexCalendarLabel];
 }
 -(void)layoutSubviews {
-	[self layoutDuplexCalendarLabel];
 	%orig;
+	[self layoutDuplexCalendarLabel];
 }
 
 
@@ -135,6 +137,16 @@ static float sizeheight = 0.0;
 
 %end
 
+%hook SBFadeAnimationSettings
+
+- (void)setDefaultValues {
+
+%orig;
+
+self.dateInSettings = nil;
+
+}
+%end
 
 %ctor{
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),
