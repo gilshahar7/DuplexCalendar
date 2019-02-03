@@ -81,6 +81,7 @@ static float sizeheight = 0.0;
 		originy = originalLabel.frame.origin.y;
 		sizewidth = originalLabel.frame.size.width;
 		sizeheight = originalLabel.frame.size.height;
+		self.duplexCalendarLabel.textColor = [self _dateColor];
 	//}
 	[self.duplexCalendarLabel setFrame:CGRectMake(originx-50+ [offsetXTextField floatValue], originy + 19 + [offsetYTextField floatValue], sizewidth+100, sizeheight)];
 	UIFont *font = self.duplexCalendarLabel.font;
