@@ -11,7 +11,7 @@
 @end
 
 @interface SBFLockScreenDateView : UIView
-@property (nonatomic, assign) UILabel *duplexCalendarLabel;
+@property (nonatomic, retain) UILabel *duplexCalendarLabel;
 @property (nonatomic, assign) NSString *todayHeaderViewText;
 @property bool dateHidden;
 -(id)_dateFont;
@@ -40,7 +40,10 @@ static void savePressed(CFNotificationCenterRef center, void *observer, CFString
 	prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:settingsPath];
 }
 
+static BOOL isiOS9 = NO;
+static BOOL isiOS8Refreshed = NO;
 static SBTodayTableHeaderView *stattodayHeaderView;
+static SBFLockScreenDateView *lockScreenDateView;
 static float originx = 0.0;
 static float originy = 0.0;
 static float sizewidth = 0.0;
@@ -51,13 +54,24 @@ static float sizeheight = 0.0;
 	stattodayHeaderView = %orig();
 	return stattodayHeaderView;
 }
+
+-(void)_layoutLunarDateLabel{
+    %orig;
+    
+    if(isiOS9) return;
+    if(!isiOS8Refreshed) {
+        isiOS8Refreshed = YES;
+        [lockScreenDateView _updateLabels];
+        lockScreenDateView = nil;
+    }
+}
 %end
 
 %hook SBFLockScreenDateView
-%property (nonatomic, assign) UILabel *duplexCalendarLabel;
+%property (nonatomic, retain) UILabel *duplexCalendarLabel;
 %property (nonatomic, assign) NSString *todayHeaderViewText;
 -(SBFLockScreenDateView *)initWithFrame:(id)arg1{
-	SBFLockScreenDateView *origself = %orig(arg1);
+	lockScreenDateView = %orig(arg1);
 	if(!self.duplexCalendarLabel){
 		self.duplexCalendarLabel = [[UILabel alloc] initWithFrame:CGRectMake(originx-50, originy + 19, sizewidth+100, sizeheight)];
 		self.duplexCalendarLabel.font = [[self _dateFont] fontWithSize:16];
@@ -65,7 +79,7 @@ static float sizeheight = 0.0;
 		self.duplexCalendarLabel.textColor = [self _dateColor];
 		self.duplexCalendarLabel.textAlignment = 1;
 	}
-	return origself;
+	return lockScreenDateView;
 }
 
 %new
@@ -90,7 +104,7 @@ static float sizeheight = 0.0;
 	}else{
 		self.duplexCalendarLabel.font = [font fontWithSize:[FontSizeTextField floatValue]];
 	}
-	if(self.duplexCalendarLabel){
+	if(isiOS9 && self.duplexCalendarLabel){
 		if([self isDateHidden]){
 			self.duplexCalendarLabel.hidden = true;
 		}else{
@@ -130,9 +144,18 @@ static float sizeheight = 0.0;
 -(void)setDateHidden:(bool)arg1{
 	%orig(arg1);
 
-	if(self.duplexCalendarLabel){
+	if(isiOS9 && self.duplexCalendarLabel){
 		self.duplexCalendarLabel.hidden = arg1;
 	}
+}
+
+-(void)_setDateAlpha:(double)arg1{
+    %orig(arg1);
+
+    if(!isiOS9 && self.duplexCalendarLabel){
+        UILabel *originalLabel = MSHookIvar<UILabel *>(self, "_dateLabel");
+        self.duplexCalendarLabel.alpha = originalLabel.alpha;
+    }
 }
 
 
@@ -150,6 +173,7 @@ self.dateInSettings = nil;
 %end
 
 %ctor{
+    if(@available(iOS 9.0, *)) isiOS9 = YES;
 	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),
 								(void*)myObserver,
 								savePressed,
