@@ -18,11 +18,12 @@
 -(id)_dateColor;
 -(BOOL)isDateHidden;
 -(void)layoutDuplexCalendarLabel;
+-(void)_updateLabels;
 @end
 
 
 @interface _UILegibilityView : UIView
-@end 
+@end
 
 @interface _UILegibilityLabel : _UILegibilityView
 @end
@@ -56,7 +57,7 @@ static float sizeheight = 0.0;
 
 -(void)_layoutLunarDateLabel{
     %orig;
-    
+
     if(!isLunarDateRefreshed) {
         isLunarDateRefreshed = YES;
         [lockScreenDateView _updateLabels];
@@ -75,7 +76,7 @@ static float sizeheight = 0.0;
 		self.duplexCalendarLabel.font = [[self _dateFont] fontWithSize:16];
 		[self addSubview:self.duplexCalendarLabel];
 		self.duplexCalendarLabel.textColor = [self _dateColor];
-		self.duplexCalendarLabel.textAlignment = 1;
+		self.duplexCalendarLabel.textAlignment = (NSTextAlignment)1;
 	}
 	return lockScreenDateView;
 }
@@ -84,8 +85,8 @@ static float sizeheight = 0.0;
 -(void)layoutDuplexCalendarLabel{
 	NSString *offsetXTextField = [prefs objectForKey:@"offsetXTextField"];
 	NSString *offsetYTextField = [prefs objectForKey:@"offsetYTextField"];
-	NSString *FontSizeTextField = [prefs objectForKey:@"FontSizeTextField"];	
-	
+	NSString *FontSizeTextField = [prefs objectForKey:@"FontSizeTextField"];
+
 	//if(originx <= 0.0)
 	//{
 		UILabel *originalLabel = MSHookIvar<UILabel *>(self, "_dateLabel");
@@ -114,9 +115,9 @@ static float sizeheight = 0.0;
 	self.duplexCalendarLabel.text = self.todayHeaderViewText;
 
 
-	
+
 }
--(void)_layoutDateLabel {	
+-(void)_layoutDateLabel {
 	%orig;
 	[self layoutDuplexCalendarLabel];
 	_UILegibilityLabel *originalLegibilityLabel = MSHookIvar<_UILegibilityLabel *>(self, "_legibilityDateLabel");
@@ -161,7 +162,7 @@ self.dateInSettings = nil;
 								(void*)myObserver,
 								savePressed,
 								CFSTR("duplexcalendar.savepressed"),
-								NULL,  
+								NULL,
 								CFNotificationSuspensionBehaviorDeliverImmediately);
 	savePressed();
 }
